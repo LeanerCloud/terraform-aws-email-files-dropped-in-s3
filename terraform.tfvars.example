@@ -1,0 +1,4 @@
+email_from  = "noreply@example.com"
+email_to    = "user@example.com"
+bucket_name = "my-bucket"
+kms_key_arn = "arn:aws:kms:us-east-1:xxxxxxxxxxxxxxxxxxxxxxxx"

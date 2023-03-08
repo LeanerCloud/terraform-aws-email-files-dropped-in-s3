@@ -1,0 +1,6 @@
+.terraform.lock.hcl
+.terraform
+email_sender.zip
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
