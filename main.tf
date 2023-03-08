@@ -8,14 +8,19 @@ data "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
 }
 
+
 resource "aws_s3_bucket_notification" "bucket_notification" {
+  for_each = var.filter_paths
+
   bucket = data.aws_s3_bucket.bucket.id
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.email_sender.arn
     events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = each.value
   }
 }
+
 
 resource "aws_lambda_function" "email_sender" {
   function_name = "email_sender_lambda"
@@ -76,16 +81,22 @@ resource "aws_iam_role" "lambda" {
             "logs:PutLogEvents"
           ],
           Effect   = "Allow",
-          Resource = "arn:aws:logs:*:*:*"
+          Resource = "arn:aws:logs:*:*:*",
         },
         {
           Action = [
             "s3:GetObject"
           ],
           Effect   = "Allow",
-          Resource = "${data.aws_s3_bucket.bucket.arn}/*"
+          Resource = "${data.aws_s3_bucket.bucket.arn}/*",
         },
         {
+
+          Condition = {
+            StringNotEqualsIfExists = {
+              "${var.kms_key_arn}" : ""
+            }
+          }
           Action = [
             "kms:Decrypt"
           ],
@@ -97,7 +108,7 @@ resource "aws_iam_role" "lambda" {
             "ses:SendRawEmail"
           ],
           Effect   = "Allow",
-          Resource = "*"
+          Resource = "*",
         }
       ]
     })
