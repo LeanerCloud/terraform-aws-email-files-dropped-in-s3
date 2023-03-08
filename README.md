@@ -21,7 +21,7 @@ The email looks like this:
 ```hcl
 module "email_sender" {
   source  = "LeanerCloud/email-files-dropped-in-s3/aws"
-  version = "0.0.2"
+  version = "0.0.3"
 
   bucket_name = "my-s3-bucket"
   email_from  = "sender@example.com"
